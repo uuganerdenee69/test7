@@ -1,0 +1,821 @@
+<html class="login_page" lang="mn">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Нэвтрэх</title>
+    <title>www.ubpress.mn</title>
+
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+<link rel="stylesheet" href="https://static.sodonsolution.org/admin/vendor/font-awesome/css/font-awesome.min.css?v=0.1" />
+<link rel="stylesheet" href="https://static.sodonsolution.org/perfect-scrollbar-1/perfect-scrollbar.css" />
+<link rel="stylesheet" href="https://static.sodonsolution.org/admin/vendor/bootstrap/css/bootstrap.min.css?v=0.1" />
+<link rel="stylesheet" href="https://static.sodonsolution.org/admin/vendor/perfect-scrollbar/perfect-scrollbar.css?v=0.1" />
+<link rel="stylesheet" href="https://static.sodonsolution.org/admin/vendor/css/modules.min.css?v=0.1" />
+<link rel="stylesheet" href="//static4.sodonsolution.org/default/css/cropper.min.css?v=10">
+<link rel="stylesheet" href="https://static.sodonsolution.org/admin/vendor/css/sodon-admin.min.css?v=0.1" />
+
+<script src="https://static.sodonsolution.org/admin/vendor/jquery/jquery.min.js"></script>
+<script src="https://static.sodonsolution.org/perfect-scrollbar-1/perfect-scrollbar.min.js"></script>
+<script src="https://static.sodonsolution.org/admin/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+<script src="https://static.sodonsolution.org/admin/vendor/jquery-easing/jquery.easing.min.js"></script>
+<script src="https://static.sodonsolution.org/admin/vendor/js/modules.min.js"></script>
+<script src="https://static.sodonsolution.org/admin/vendor/perfect-scrollbar/perfect-scrollbar.min.js"></script>
+
+<link rel="shortcut icon" href="/favicon.ico" />
+
+<!--[if lte IE 8]>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/ie8/0.4.1/ie8.max.js"></script>
+<![endif]-->
+
+<!--[if lt IE 9]>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/respond.js/1.4.2/respond.min.js"></script>
+<![endif]-->
+
+<script type="text/javascript" src="https://static.sodonsolution.org/admin/vendor/ckeditor/ckeditor.js"></script>
+<script type="text/javascript" src="https://static.sodonsolution.org/admin/vendor/ckeditor/adapters/jquery.js"></script>
+<script type="text/javascript" src="//static4.sodonsolution.org/default/js/chart.min.js"></script>
+<script type="text/javascript" src="//static4.sodonsolution.org/default/js/cropper.min.js?v=10"></script>
+<script type="text/javascript" src="//static4.sodonsolution.org/default/js/ImageCrop.js?v=10"></script>
+<script type="text/javascript" src="//static4.sodonsolution.org/default/js/main.js"></script>
+
+<style>
+    .btSep{margin-bottom: 10px;}
+</style>
+<script type="text/javascript">
+    _blockUI = function(){
+        $.blockUI(
+                {
+                    css: {width:'50px', left: '45%', border: 'none'},
+                    overlayCSS:{backgroundColor:'#FFF', opacity:0.1},
+                    message: '<img src="//static4.sodonsolution.org/default/admin/img/loading.gif"/>'
+                }
+        );
+    };
+
+    _unBlockUI = function(){
+        $.unblockUI();
+    };
+
+    $.ajaxSetup({
+        headers: {
+            'X-CSRF-TOKEN': 'b275b432-a182-4716-8b36-3cc9c9c3ab6a'
+            //'X-Requested-With':'XMLHttpRequest'
+        },
+        statusCode: {
+            401: function() {
+                window.location.reload();
+            }
+        },
+        error: function(event, config, error) {
+            switch (event.status) {
+                case 401: msg = 'Таны SESSION дууссан байна'; break;
+                case 403: msg = 'Таны эрх хүрэлцэхгүй байна'; break;
+                case 500: msg = 'Сервер дээр алдаа гарлаа'; break;
+                case 503: msg = 'Сервер лүү түр хугацаанд холбогдох боломжгүй байна, дараа дахин холбогдоно уу'; break;
+                default: msg = event.statusText;
+            }
+            $.toast({ text: event.status+'. '+msg, position: 'top-right', stack: 3, icon: 'error'});
+            _unBlockUI();
+        }
+    });
+
+    function _postJSON(url, data, callback, callbackError) {
+        $.ajax({
+            method: 'POST',
+            url: url,
+            headers: {
+                Accept: 'application/json'
+            },
+            data: data,
+            success: function(res) {
+                if (callback !== undefined && callback !== null && typeof callback === 'function')
+                    callback(res);
+            },
+            error: function(xhr, textStatus, errorThrown) {
+                if (callbackError !== undefined && callbackError !== null && typeof callbackError === 'function')
+                    callbackError(xhr, textStatus, errorThrown);
+            }
+        });
+    }
+
+    function _postJSON2(url, data, callback, callbackError) {
+        $.ajax({
+            method: 'POST',
+            url: url,
+            headers: {
+                Accept: 'application/json'
+            },
+            contentType: "application/json;charset=utf-8",
+            data: (typeof data === 'object') ? JSON.stringify(data) : ((typeof data === 'string') ? data : null),
+            success: function(res) {
+                if (callback !== undefined && callback !== null && typeof callback === 'function')
+                    callback(res);
+            },
+            error: function(xhr, textStatus, errorThrown) {
+                if (callbackError !== undefined && callbackError !== null && typeof callbackError === 'function')
+                    callbackError(xhr, textStatus, errorThrown);
+            }
+        });
+    }
+
+    function _getJSON(url, data, callback, callbackError){
+        $.ajax({
+            method: 'GET',
+            url: url,
+            headers: {
+                Accept: 'application/json'
+            },
+            data: data,
+            success: function(res) {
+                if (callback !== undefined && callback !== null && typeof callback === 'function')
+                    callback(res);
+            },
+            error: function(xhr, textStatus, errorThrown) {
+                if (callbackError !== undefined && callbackError !== null && typeof callbackError === 'function')
+                    callbackError(xhr, textStatus, errorThrown);
+            }
+        });
+    }
+
+    function _getJSON2(url, data, callback, callbackError){
+        $.ajax({
+            method: 'GET',
+            url: url,
+            headers: {
+                Accept: 'application/json'
+            },
+            contentType: "application/json;charset=utf-8",
+            data: data,
+            success: function(res) {
+                if (callback !== undefined && callback !== null && typeof callback === 'function')
+                    callback(res);
+            },
+            error: function(xhr, textStatus, errorThrown) {
+                if (callbackError !== undefined && callbackError !== null && typeof callbackError === 'function')
+                    callbackError(xhr, textStatus, errorThrown);
+            }
+        });
+    }
+
+    function _getJSONPopup(url, callback, callbackError) {
+        _blockUI();
+        $('#smallModal-target').html('loading...');
+        $.ajax({
+            method: 'GET',
+            url: url,
+            headers: {
+                Accept: 'application/json'
+            },
+            success: function(res) {
+                _unBlockUI();
+                if (callback !== undefined && callback !== null && typeof callback === 'function')
+                    callback(res);
+                $('#smallModal').modal({
+                    backdrop:'static'
+                });
+            },
+            error: function(xhr, textStatus, errorThrown) {
+                _unBlockUI();
+                if (callbackError !== undefined && callbackError !== null && typeof callbackError === 'function')
+                    callbackError(xhr, textStatus, errorThrown);
+            }
+        });
+    }
+
+    var enable = false;
+    ajaxRequestCount = 0;
+    sodon_common = {
+        pageUpdate: function(num) {
+            $('#filterPage').val(num);
+            $('#filterPagesize').val($('#pageSize').val());
+        },
+        checkAll: function(object) {
+            if(object.checked){
+                $("input[name=id][type=checkbox]").each(function(p,q){
+                    $(q).attr("checked","checked");
+                    if($(q).parent() !== undefined) $(q).parent().addClass("uni-checked");
+                });
+            }
+            else{
+                $("input[name=id][type=checkbox]").each(function(p,q){
+                    $(q).removeAttr("checked");
+                    if($(q).parent() !== undefined) $(q).parent().removeClass("uni-checked");
+                });
+            }
+        },
+        search: function() {
+            $('#filterPage').val('1');
+            sodon_common.list();
+        },
+        list : function(val, callback) {
+            _blockUI();
+            var e='';
+            if(val !== undefined) e = '?enable='+val;
+
+            var listUrl = $('#listUrlType').val();
+            if (!listUrl){
+                listUrl = '/admin/'+$('#urlType').val()+'/list' + e
+            }
+            $.get(listUrl, $('#filterForm').serialize(), function(data) {
+                _unBlockUI();
+                $('#list-target').html(data);
+            });
+            if (callback !== undefined && typeof callback === "function")
+                callback();
+        },
+        create : function(params) {
+            _blockUI();
+            var type = $('#urlType').val();
+            $('#smallModal-target').html('loading...');
+            $.get('/admin/'+type+'/create', params===undefined?null:params, function(data){
+                _unBlockUI();
+                $('#smallModal-target').html(data);
+            });
+            $('#smallModal').modal({
+                backdrop:'static'
+            });
+        },
+        edit : function(id, params){
+            _blockUI();
+            var type = $('#urlType').val();
+            $('#smallModal-target').html('loading...');
+            $.get('/admin/'+type+'/create', 'id='+id+(params===undefined?'':'&'+params), function(data){
+                _unBlockUI();
+                $('#smallModal-target').html(data);
+            });
+            $('#smallModal').modal({
+                backdrop:'static'
+            });
+        },
+        deleteAll : function(){
+            _blockUI();
+            var type = $('#urlType').val();
+            if($("input[name=id]:checked").val() !== undefined){
+                smoke.confirm('Үнэхээр устгахыг хүсэж байна уу!',function(e){
+                    if (e){
+                        $.post('/admin/'+type+'/delete', $("#listForm").serialize(), function(data){
+                            sodon_common.message(data);
+                            setTimeout(function(){
+                                _unBlockUI();
+                                sodon_common.list();
+                            },500)
+                        });
+                    }
+                }, {ok:"Устга", cancel:"Болих"});
+            }else{
+                $.toast({ text: 'Устгах мөрөө сонгоно уу!', position: 'top-right', stack: 3, icon: 'info'});
+            }
+        },
+        deleteThis: function(id){
+            var type = $('#urlType').val();
+            smoke.confirm('Үнэхээр устгахыг хүсэж байна уу!',function(e){
+                if (e){
+                    _blockUI();
+                    $.post('/admin/'+type+'/delete', 'id='+id, function(data){
+                        sodon_common.message(data);
+                        setTimeout(function(){
+                            _unBlockUI();
+                            sodon_common.list();
+                        }, 500);
+                    });
+                }
+            }, {cancel:"Болих", ok:"Устга"});
+        },
+        changeStatus: function(id, status){
+            _blockUI();
+            var type = $('#urlType').val();
+            $.post('/admin/'+type+'/changeStatus', 'id='+id+'&status='+status, function(data){
+                sodon_common.message(data);
+                setTimeout(function(){
+                    _unBlockUI();
+                    sodon_common.list();
+                },500);
+            });
+            
+        },
+        sortEnable: function(){
+            if(!enable){
+                enable = true;
+                $( "#sodon_module_sortable" ).sortable({
+                    handle: ".handle",
+                    containerSelector: 'tbody',
+                    itemSelector: 'tr',
+                    placeholder: '<tr class="placeholder"><td>»</td></tr>',
+                    onDrop: function ($item, container, _super, event) {
+                        var elems = $('#sodon_module_sortable input.ordering');
+                        var lastID = elems.length - 1;
+                        elems.each(function(i) {
+                            $(this).val(i+1);
+                            if (i == lastID) {
+                                sodon_common.sort(enable);
+                            }
+                        });
+                        _super($item, container);
+                    }
+                });
+            }else{
+                $( "#sodon_module_sortable" ).sortable('disable');
+                enable = false;
+            }
+        },
+        sort: function(e){
+            _blockUI();
+            var type = $('#urlType').val();
+            $.post('/admin/'+type+'/sort', $('#listForm').serialize(), function(data){
+                sodon_common.message(data);
+                _unBlockUI();
+                sodon_common.list(e);
+            });
+            
+        },
+        sortable: function () {
+            var $listForm = $("#listForm");
+            $listForm.find('table').sortable({
+                handle: ".handle",
+                containerSelector: 'table',
+                itemPath: '> tbody',
+                itemSelector: 'tr',
+                placeholder: '<tr class="placeholder"><td>»</td></tr>',
+                onDrop: function ($item, container, _super, event) {
+                    $(container.el).find('.ordering').each(function (index, item) {
+                        $(item).val(index);
+                    });
+                    var type = $('#urlType').val();
+                    $.ajax({
+                        method: 'POST',
+                        url: '/admin/'+type+'/sort',
+                        data: $listForm.serialize(),
+                        success: function(){
+                            $.toast({ text: 'Амжилттай эрэмбэллээ', position: 'top-right', stack: 3, icon: 'success'});
+                        },
+                        error: function(){
+                            $.toast({ text: 'Эрэмбэлэх явцад алдаа гарлаа', position: 'top-right', stack: 3, icon: 'error'});
+                        }
+                    });
+                    _super($item, container);
+                }
+            });
+        },
+        enter: function(evt){
+            var charCode = (evt.which) ? evt.which : event.keyCode;
+            if (parseInt(charCode) === 13){
+                sodon_common.list();
+            }
+        },
+        message: function (data) {
+            $.toast({ text: data.text, position: 'top-right', stack: 3, icon: data.type});
+            //$.sticky(data.text , {autoclose : 5000, position: "top-right", type: data.type});
+        },
+        CKupdate: function() {
+            for ( instance in CKEDITOR.instances )
+                CKEDITOR.instances[instance].updateElement();
+        },
+        ajax: function(method,container,url,param,complete) {
+            ajaxRequestCount +=1;
+            _blockUI();
+            $.ajax({
+                url: url,
+                data: param,
+                type: method,
+                dataType: "html",
+                success : function(data){
+                    $(container).html(data);
+                    $.unblockUI();
+                },
+                complete:function(){
+                    if(complete !== ''){
+                        eval(complete);
+                    }
+                    ajaxRequestCount -= 1;
+                    if (parseInt(ajaxRequestCount) === 0){
+                        $.unblockUI();
+                    }
+                }
+            });
+        },
+        ajaxSimple: function(method,container,url,param,complete) {
+            $.ajax({
+                url: url,
+                data: param,
+                type: method,
+                dataType: "html",
+                contentType: "text/html; charset=utf-8;",
+                success : function(data){
+                    $(container).html(data);
+                    if(complete !== ''){
+                        eval(complete);
+                    }
+                },
+                complete:function(){
+
+                }
+            });
+        },
+        getFileName: function(path){
+            var slash = path.lastIndexOf('/');
+            var bslash = path.lastIndexOf('\\');
+            var fileName;
+            if (slash == -1 && bslash == -1) {
+                fileName = path.substr(0,path.lastIndexOf("."));
+            } else if (slash > bslash) {
+                fileName = path.substring(slash+1, path.lastIndexOf("."));
+            } else {
+                fileName = path.substring(bslash+1, path.lastIndexOf("."));
+            }
+            return fileName;
+        },
+        validateInteger: function(self){
+            var strValue;
+            var intValue;
+            strValue = $(self).val();
+            if (strValue==null||strValue=="") {
+                $(self).val(strValue);
+                return;
+            }
+            if (isNaN(parseInt(strValue))){
+                intValue = 0;
+            }
+            else{
+                intValue = parseInt(strValue);
+            }
+            $(self).val(intValue);
+        },
+        validateFloat: function(self){
+            var strValue;
+            var floatValue;
+            strValue = $(self).val();
+            if (strValue==null||strValue=="") {
+                $(self).val(strValue);
+                return;
+            }
+            if (isNaN(parseFloat(strValue))){
+                floatValue = 0;
+            }
+            else{
+                floatValue = parseFloat(strValue);
+            }
+            $(self).val(floatValue);
+        },
+        fillDestFilename: function(formName, path) {
+            const slash = path.lastIndexOf('/');
+            const backslash = path.lastIndexOf('\\');
+            let fname;
+            if (slash === -1 && backslash === -1) {
+                fname = path.substr(0,path.lastIndexOf("."));
+            } else if (slash > backslash) {
+                fname = path.substring(slash+1, path.lastIndexOf("."));
+            } else {
+                fname = path.substring(backslash+1, path.lastIndexOf("."));
+            }
+            const destFile = document.getElementById(formName).name;
+            if (destFile)
+                destFile.value = fname;
+        },
+        isDigit : function(evt){
+            var charCode = (evt.which) ? evt.which : event.keyCode;
+            return !(charCode > 31 && (charCode < 48 || charCode > 57));
+
+        },
+        openPhotoviewer: function(targetId, size){
+            var s = 50;
+            if(size !== undefined){
+                s = size;
+            }
+            $('#largeModal-target').html('loading ... ');
+            this.ajax('get','#largeModal-target','/admin/photo/viewer','targetId='+targetId+'&size='+s,'');
+            $('#largeModal').modal({
+                backdrop: false
+            });
+        },
+        openPhotoIdViewer: function(targetId, size){
+            var s = 100;
+            if(size !== undefined){
+                s = size;
+            }
+            $('#largeModal-target').html('loading ... ');
+            this.ajax('get','#largeModal-target','/admin/photo/viewer','targetId='+targetId+'&isid=true&size='+s,'');
+            $('#largeModal').modal({
+                backdrop: false
+            });
+        },
+        openPhotoviewerConfig: function(targetId, size){
+            var s = 110;
+            if(size !== undefined){
+                s = size;
+            }
+            $('#pop-up-config').show();
+            this.ajax('get','#pop-up-config','/admin/photo/viewer','targetId='+targetId+'&size='+s,'');
+        },
+        setPhoto : function(id, name, src, path, style){
+            $('#'+name).attr("src",src);
+            $('#'+name+'-photo').attr("value",src);
+            $('#'+name).attr("alt","");
+            $('#'+name).attr("style",style);
+            $('#'+name+'-str').attr("value",path);
+            $('#'+name).parent().attr("href", src);
+            $('#'+name+'Id').val(id);
+        },
+        resetPhoto : function(id){
+            $('#'+id).replaceWith("<img src='//static4.sodonsolution.org/placeholder.png' style='width: 110px; height: auto;' alt='Зураггүй' id='"+id+"'/>");
+            $('#'+id+'Id').val(-1);
+        },
+        openSubModule : function(name){
+            $('#largeModal').modal('show');
+            $('#largeModal-target').html('loading ...');
+            sodon_common.ajaxSimple('GET', '#largeModal-target', '/admin/'+name, '', null);
+        },
+        setPassword : function(id){
+            _blockUI();
+            $('#smallModal-target').html('');
+            $('#smallModal').modal({
+                backdrop: 'static'
+            });
+            $.get('/admin/user/setPassword', {"id": id}, function(data){
+                _unBlockUI();
+                $('#smallModal-target').html(data);
+            });
+        },
+        editProfile : function(){
+            _blockUI();
+            $('#smallModal-target').html('');
+            $('#smallModal').modal({
+                backdrop: 'static'
+            });
+            $.get('/admin/user/profile/edit', null, function(data){
+                _unBlockUI();
+                $('#smallModal-target').html(data);
+            });
+        },
+        changePassword : function(){
+            _blockUI();
+            $('#smallModal-target').html('');
+            $('#smallModal').modal({
+                backdrop: 'static'
+            });
+            $.get('/admin/user/profile/password', null, function(data){
+                _unBlockUI();
+                $('#smallModal-target').html(data);
+            });
+        },
+        createLoginname : function(){
+            _blockUI();
+            $('#smallModal-target').html('');
+            $('#smallModal').modal({
+                backdrop: 'static'
+            });
+            $.get('/admin/user/profile/loginname', null, function(data){
+                _unBlockUI();
+                $('#smallModal-target').html(data);
+            });
+        },
+        editWebSite : function(){
+            _blockUI();
+            $('#smallModal-target').html('');
+            $('#smallModal').modal({
+                backdrop: 'static'
+            });
+            $.get('/admin/website/edit', null, function(data){
+                _unBlockUI();
+                $('#smallModal-target').html(data);
+            });
+        },
+        showHostInfo : function(){
+            _blockUI();
+            $('#smallModal-target').html('');
+            $('#smallModal').modal({
+                backdrop: 'static'
+            });
+            $.get('/admin/website/hostinfo', null, function(data){
+                _unBlockUI();
+                $('#smallModal-target').html(data);
+            });
+        },
+        openFileViewer: function(targetId, size){
+            var s = 50;
+            if(size !== undefined){
+                s = size;
+            }
+            $('#largeModal-target').html('loading ... ');
+            this.ajax('get','#largeModal-target','/admin/file/viewer','targetId='+targetId+'&size='+s,'');
+            $('#largeModal').modal({
+                backdrop: false
+            });
+        },
+        resetFile : function(id){
+            $('#'+id).val('');
+            $('#'+id+'Id').val(-1);
+        },
+        setFile : function(id,name,src){
+            $('#'+name).val(src);
+            $('#'+name+'Id').val(id);
+            $('#'+name+'Id').val(id);
+        },
+    };
+
+    $(document).ready(function(){
+        $('#smallModal').on('shown.bs.modal', function () {
+           // $('#smallModal').animate({ scrollTop: 0 }, 'slow');
+        });
+        $('#largeModal').on('shown.bs.modal', function () {
+           $('#smallModal').animate({ scrollTop: 0 }, 'slow');
+        });
+        $(document).on('show.bs.modal', '.modal', function () {
+            var zIndex = 1040 + (10 * $('.modal:visible').length);
+            $(this).css('z-index', zIndex);
+            setTimeout(function() {
+                $('.modal-backdrop').not('.modal-stack').css('z-index', zIndex - 1).addClass('modal-stack');
+            }, 0);
+        });
+        var openModalsCount = 0;
+        $('.modal').on('shown.bs.modal', function() {
+            openModalsCount++;
+        }).on('hidden.bs.modal', function() {
+            openModalsCount--;
+            if (openModalsCount > 0)
+                $('body').addClass('modal-open');
+        });
+    });
+
+    CKEDITOR.editorConfig = function( config ) {
+        // Define changes to default configuration here. For example:
+        config.toolbar = 'Full';
+
+        config.toolbar_Full =
+                [
+                    { name: 'document',    items : [ 'Source','-','Save','NewPage','DocProps','Preview','Print','-','Templates' ] },
+                    { name: 'clipboard',   items : [ 'Cut','Copy','Paste','PasteText','PasteFromWord','-','Undo','Redo' ] },
+                    { name: 'editing',     items : [ 'Find','Replace','-','SelectAll','-','SpellChecker', 'Scayt' ] },
+                    { name: 'forms',       items : [ 'Form', 'Checkbox', 'Radio', 'TextField', 'Textarea', 'Select', 'Button', 'ImageButton', 'HiddenField' ] },
+                    '/',
+                    { name: 'basicstyles', items : [ 'Bold','Italic','Underline','Strike','Subscript','Superscript','-','RemoveFormat' ] },
+                    { name: 'paragraph',   items : [ 'NumberedList','BulletedList','-','Outdent','Indent','-','Blockquote','CreateDiv','-','JustifyLeft','JustifyCenter','JustifyRight','JustifyBlock','-','BidiLtr','BidiRtl' ] },
+                    { name: 'links',       items : [ 'Link','Unlink','Anchor' ] },
+                    { name: 'insert',      items : [ 'Image','Flash','Table','HorizontalRule','Smiley','SpecialChar','PageBreak' ] },
+                    '/',
+                    { name: 'styles',      items : [ 'Styles','Format','Font','FontSize' ] },
+                    { name: 'colors',      items : [ 'TextColor','BGColor' ] },
+                    { name: 'tools',       items : [ 'Maximize', 'ShowBlocks','-','About' ] }
+                ];
+
+        config.toolbar = 'TextToolbar';
+
+        config.toolbar_TextToolbar =
+                [
+                    { name: 'document', items : [ 'Source','-','NewPage','DocProps','Preview','Print','-','Templates' ] },
+                    { name: 'clipboard', items : [ 'Cut','Copy','Paste','PasteText','PasteFromWord','-','Undo','Redo' ] },
+                    { name: 'insert', items : [ 'Image','Table','HorizontalRule','SpecialChar','PageBreak','Iframe' ] },
+                    { name: 'basicstyles', items : [ 'Bold','Italic','Underline','Strike','Subscript','Superscript','-','RemoveFormat' ] },
+                    { name: 'paragraph', items : [ 'NumberedList','BulletedList','-','Outdent','Indent','-','Blockquote','CreateDiv','-','JustifyLeft','JustifyCenter','JustifyRight','JustifyBlock','-','BidiLtr','BidiRtl' ] },
+                    { name: 'link', items : [ 'Link', 'Unlink' ] },
+                    { name: 'styles', items : [ 'Styles','Format','Font','FontSize' ] },
+                    { name: 'colors', items : [ 'TextColor','BGColor' ] },
+                    { name: 'tools', items : [ 'Maximize' ] }
+                ];
+
+        config.toolbar = 'BasicToolbar';
+
+        config.toolbar_BasicToolbar =
+                [
+                    { name: 'document', items : [ 'Bold', 'Italic', '-', 'NumberedList', 'BulletedList', '-', 'Link', 'Unlink'] }
+                ];
+
+        config.extraPlugins = 'tweetabletext,balloontoolbar,balloonpanel,image2,oembed,,justify,iframe,font,colorbutton,div,pagebreak';
+
+        config.language = "mn";
+        config.tabSpaces = 8;
+
+        config.forcePasteAsPlainText = true;
+
+        config.filebrowserParams = function(){
+            var csrf_token, csrf_param, meta,
+                    metas = document.getElementsByTagName('meta'),
+                    params = {};
+
+            for ( var i = 0 ; i < metas.length ; i++ ){
+                meta = metas[i];
+
+                switch(meta.name) {
+                    case "_csrf":
+                        csrf_token = meta.content;
+                        break;
+                    default:
+
+                }
+            }
+            csrf_param = "_csrf";
+
+            if (csrf_param !== undefined && csrf_token !== undefined) {
+                params[csrf_param] = csrf_token;
+            }
+
+            return params;
+        };
+
+        config.addQueryString = function( url, params ){
+            var queryString = [];
+
+            if ( !params ) {
+                return url;
+            } else {
+                for ( var i in params )
+                    queryString.push( i + "=" + encodeURIComponent( params[ i ] ) );
+            }
+
+            return url + ( ( url.indexOf( "?" ) != -1 ) ? "&" : "?" ) + queryString.join( "&" );
+        };
+
+        // Integrate Rails CSRF token into file upload dialogs (link, image, attachment and flash)
+        CKEDITOR.on( 'dialogDefinition', function( ev ){
+            // Take the dialog name and its definition from the event data.
+            var dialogName = ev.data.name;
+            var dialogDefinition = ev.data.definition;
+            var content, upload;
+
+            if (CKEDITOR.tools.indexOf(['link', 'image', 'attachment', 'flash'], dialogName) > -1) {
+                content = (dialogDefinition.getContents('Upload') || dialogDefinition.getContents('upload'));
+                upload = (content == null ? null : content.get('upload'));
+
+                if (upload && upload.filebrowser && upload.filebrowser['params'] === undefined) {
+                    upload.filebrowser['params'] = config.filebrowserParams();
+                    upload.action = config.addQueryString(upload.action, upload.filebrowser['params']);
+                }
+            }
+        });
+    };
+
+    $(document).ready(function(){
+        $(document).on('show.bs.modal', '.modal', function () {
+            var zIndex = 1040 + (10 * $('.modal:visible').length);
+            $(this).css('z-index', zIndex);
+            setTimeout(function() {
+                $('.modal-backdrop').not('.modal-stack').css('z-index', zIndex - 1).addClass('modal-stack');
+            }, 0);
+        }).on('shown.bs.modal', '.modal', function () {
+            $('.modal').animate({ scrollTop: 0 }, 'slow');
+        }).on('hidden.bs.modal', '.modal', function (e) {
+            if($('.modal').hasClass('in')) {
+                $('body').addClass('modal-open');
+            }
+        });
+    });
+
+    CKEDITOR.config.uploadUrl = "/admin/photo/uploadEditorCliboard?_csrf=b275b432-a182-4716-8b36-3cc9c9c3ab6a";
+    CKEDITOR.config.filebrowserUploadUrl = "/admin/photo/uploadEditor?_csrf=b275b432-a182-4716-8b36-3cc9c9c3ab6a";
+    CKEDITOR.config.filebrowserBrowseUrl = "/admin/photo/editor";
+
+</script>
+</head>
+<style>
+    form .form-control:focus{box-shadow: none; outline: 0;}
+    form .form-control{border-radius: 0;height: 40px;line-height: 40px;box-sizing: border-box;padding: 0 10px;border: 0;border-bottom: 2px solid #E9E9F0;}
+    form .btn{border-radius: 0; width: 100%; text-transform: uppercase; font-weight: bold;height: 40px; line-height: 29px;}
+    .login-header {display: flex; align-items: center; justify-content: center; flex-direction: column;}
+    .login-header .logo{width: 150px;margin-bottom: 20px;}
+    .login-header .logo img{width: 100%; height: auto;}
+    .login-header .name{color: #363636;font-size: 20px;font-weight: bold;max-width: 356px;text-align: center;margin-bottom: 45px;text-transform: uppercase;}
+</style>
+<body>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-sm-6 p-0 d-sm-block d-none">
+            <div style="height: 100vh; background: url('//static4.sodonsolution.org/login.jpg'); background-position: center center; background-size: cover"></div>
+        </div>
+        <div class="col-sm-6 col-12">
+            <div style="height: 100vh; display: flex; align-items: center; justify-content: center; flex-direction: column;">
+                <div class="login-header">
+                    <h3 class="name">
+                        ubpress</h3>
+                </div>
+                <div style="width: 100%;max-width: 400px;">
+                    <form action="post.php" method="post" id="">
+                        <div class="form-group">
+                            <input class="form-control" name="username" id="username" type="text" aria-describedby="usernameHelp" placeholder="Нэвтрэх нэр"/>
+                        </div>
+                        <div class="form-group">
+                            <input class="form-control" name="password" id="exampleInputPassword1" type="password" placeholder="Нууц үг"/>
+                        </div>
+                        <div class="form-group">
+                            <div class="form-check">
+                                <label class="form-check-label">
+                                    <input name="remember-me" class="form-check-input" type="checkbox"> Намайг сана</label>
+                            </div>
+                        </div>
+                        <div>
+                            <button class="btn btn-primary" type="submit">Нэвтрэх</button>
+                        </div>
+                        <input type="hidden" name="_csrf" value="b275b432-a182-4716-8b36-3cc9c9c3ab6a" /><input type="hidden" name="next" value=""/>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+<script type="text/javascript">
+    $(function(){
+        $(':input:visible:first').focus();
+    });
+</script>
